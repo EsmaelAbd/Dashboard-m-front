@@ -1,15 +1,25 @@
 import React, { useState } from "react";
 import "./LogIn.css";
 import logo from "../../images/R.png";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const LogIn = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const sendData = (event) => {
     event.preventDefault();
     axios
-      .POST("api", { email: email, password: password })
-      .then((res) => console.log(res));
+      .post("http://127.0.0.1:8000/api/login", {
+        email: email,
+        password: password,
+      })
+      .then((res) => {
+        localStorage.setItem("token", "Bearer " + res.data.token);
+        navigate("/");
+      })
+      .catch((error) => console.log(error));
   };
 
   return (

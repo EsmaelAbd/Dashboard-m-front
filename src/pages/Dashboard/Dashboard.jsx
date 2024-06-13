@@ -6,7 +6,6 @@ import Sidebar from "../../components/Sidebar";
 const Dashboard = () => {
   const navigate = useNavigate();
   useEffect(() => {
-    localStorage.setItem("token", "test");
     if (!localStorage.getItem("token")) {
       navigate("/login");
     }

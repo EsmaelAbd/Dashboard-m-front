@@ -1,38 +1,41 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar";
 import { Link, useNavigate } from "react-router-dom";
 import "./Items.css";
 import supra from "../../images/supra.png";
+import axios from "axios";
 
 const Items = () => {
+  const [data, setdata] = useState([]);
   const navigate = useNavigate();
   useEffect(() => {
-    localStorage.setItem("token", "test");
     if (!localStorage.getItem("token")) {
       navigate("/login");
     }
+    axios
+      .get("http://127.0.0.1:8000/api/items", {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
+      .then((res) => setdata(res.data))
+      .catch((error) => console.log(error));
   }, []);
-
-  const data = [
-    {
-      id: 1,
-      image: supra,
-      name: "supra",
-      price: 15000,
-    },
-    {
-      id: 2,
-      image: supra,
-      name: "supra 2",
-      price: 20000,
-    },
-  ];
 
   const show = (id) => {
     navigate(`/item/${id}`);
   };
   const update = (id) => {
     navigate(`/edit/${id}`);
+  };
+  const deleteItem = (id) => {
+    axios
+      .delete(`http://127.0.0.1:8000/api/items/${id}`, {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
+      .then((res) => console.log(res.data));
   };
   return (
     <div className="items">
@@ -55,17 +58,22 @@ const Items = () => {
           <tbody>
             {data.map((element, index) => {
               return (
-                <tr>
+                <tr key={index}>
                   <td>{element.id}</td>
                   <td>
-                    <img src={element.image} alt={element.name} />
+                    <img
+                      src={`http://127.0.0.1:8000/images/${element.image}`}
+                      alt={element.name}
+                    />
                   </td>
                   <td>{element.name}</td>
                   <td>{element.price}</td>
                   <td>
                     <button onClick={() => show(element.id)}>show</button>
                     <button onClick={() => update(element.id)}>update</button>
-                    <button>delete</button>
+                    <button onClick={() => deleteItem(element.id)}>
+                      delete
+                    </button>
                   </td>
                 </tr>
               );

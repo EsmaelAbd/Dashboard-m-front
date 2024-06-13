@@ -24,12 +24,16 @@
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 50px;
+  gap: 75px;
 }
 
 .sidebar li,
-.sidebar a {
+.sidebar a,
+.sidebar li button {
   color: black;
   font-size: 30px;
   color: white;
+  background: none;
+  border: none;
+  cursor: pointer;
 }

@@ -1,15 +1,34 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./AddItems.css";
 import Sidebar from "../../components/Sidebar";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const AddItems = () => {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [image, setImage] = useState("");
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!localStorage.getItem("token")) {
+      navigate("/");
+    }
+  }, []);
   const sendData = (event) => {
     event.preventDefault();
     let data = { name: name, price: price, image: image };
-    console.log(data);
+    axios
+      .post("http://127.0.0.1:8000/api/add", data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: localStorage.getItem("token"),
+        },
+      })
+      .then((res) => {
+        console.log(res);
+        navigate("/items");
+      })
+      .catch((error) => console.log(error));
   };
   return (
     <div className="additem">
